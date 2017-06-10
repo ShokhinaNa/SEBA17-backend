@@ -16,7 +16,7 @@ module.exports.login = function(req, res){
     User.findOne({username: req.body.username}, function(err, user){
         if (err) {
             res.status(500).send(err);
-            return
+            return;
         }
 
         if (!user) {
@@ -31,7 +31,6 @@ module.exports.login = function(req, res){
             }
         });
     });
-
 };
 
 module.exports.signup = function(req, res){
@@ -44,10 +43,16 @@ module.exports.signup = function(req, res){
         return;
     }
 
+    if(!req.body.useremail){
+        res.status(400).send('email required');
+        return;
+    }
+
     var user = new User();
 
     user.username = req.body.username;
     user.password = req.body.password;
+    user.useremail = req.body.useremail;
 
     user.save(function(err) {
         if (err) {

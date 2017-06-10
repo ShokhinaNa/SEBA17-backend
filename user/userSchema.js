@@ -10,6 +10,11 @@ var userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    useremail: {
+        type: String,
+        required: true,
+        unique: true
     }
 });
 
