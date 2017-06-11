@@ -63,7 +63,7 @@ exports.putMeeting = function(req, res) {
 };
 // Create endpoint /api/meeting/:meeting_id for DELETE
 exports.deleteMeeting = function(req, res) {
-    // Use the Beer model to find a specific beer and remove it
+    // Use the Meeting model to find a specific meeting and remove it
     Meeting.findById(req.params.meeting_id, function(err, m) {
         if (err) {
             res.status(400).send(err);
