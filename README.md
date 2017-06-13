@@ -1,6 +1,6 @@
-# sebamaster-movie-backend application
+# Timeet-backend application
 
-sebamaster-movie-frontend application can be found [here](https://github.com/sebischair/sebamaster-movie-frontend)
+Timeet-frontend application can be found [here](https://github.com/ShokhinaNa/SEBA17)
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Just for the backend application:
 
 go to your project root folder via command line
 ```
-cd path/to/workspace/sebamaster-movie-backend
+cd path/to/workspace/timeet-backend
 ```
 
 **install node dependencies**
