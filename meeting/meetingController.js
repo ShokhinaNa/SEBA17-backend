@@ -5,9 +5,9 @@ var Meeting = require('./meetingSchema');
 exports.postMeeting = function(req, res) {
     var meeting = new Meeting(req.body);
     //do not allow user to fake identity.
-    if (!req.user.equals(meeting.user)) {
-        res.sendStatus(401);
-    }
+     if (!req.user.equals(meeting.facilitator)) {
+         res.sendStatus(401);
+     }
     meeting.save(function(err, m) {
         if (err) {
             res.status(400).send(err);
