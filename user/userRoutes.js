@@ -8,7 +8,7 @@ function userRoutes(passport) {
     router.post('/login', userController.login);
     router.post('/signup', userController.signup);
     router.post('/unregister', passport.authenticate('jwt', {session: false}),userController.unregister);
-    router.get('/:user_id', userController.getemail);
+    router.get('/:user_id', userController.getUser);
 
     return router;
 

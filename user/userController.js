@@ -72,13 +72,17 @@ module.exports.unregister = function(req, res) {
 };
 
 
-exports.getemail = function(req, res) {
+exports.getUser = function(req, res) {
         User.findById(req.params.user_id, function(err, user) {
             if (err) {
                 res.status(500).send(err);
                 return;
             }
-            res.json(user.useremail);
+            res.json({
+                _id: user._id,
+                useremail: user.useremail,
+                username: user.username
+            });
         });
 };
 
