@@ -11,9 +11,9 @@ mongoose.connect([Config.db.host, '/', Config.db.name].join(''),{
 });
 
 var user1 = new User({
-    username: "user1",
+    useremail: "email1",
     password: "pass1",
-    useremail: "email1"
+    username: "user1"
 });
 
 user1.save(function(err, created_user) {
