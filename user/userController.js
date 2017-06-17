@@ -72,6 +72,17 @@ module.exports.unregister = function(req, res) {
     });
 };
 
+
+exports.getemail = function(req, res) {
+        User.findById(req.params.user_id, function(err, user) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(user.useremail);
+        });
+};
+
 function createToken(user) {
     var tokenPayload = {
         user: {
