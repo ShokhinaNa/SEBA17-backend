@@ -12,10 +12,7 @@ var Meeting = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    participants: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
+    participants: [String, String],
     availabilities: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,
