@@ -72,7 +72,30 @@ module.exports.unregister = function(req, res) {
 };
 
 
-exports.getUser = function(req, res) {
+module.exports.searchUser = function(req, res) {
+    var searchText = new Buffer(req.params.query, 'base64').toString();
+    var filteredRegexPattern = searchText.replace(/[^\w\s]/gi, " ").split(/\s+/g).join("|");
+    console.log("Search users by regex: " + filteredRegexPattern);
+    var regExp = new RegExp(filteredRegexPattern, 'i');
+    User.find({$or: [{username: regExp}, {useremail: regExp}]})
+        .limit(10)
+        .exec(function(err, users) {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json({
+            users: users.map(function(u) {
+                return {
+                    _id: u._id,
+                    useremail: u.useremail,
+                    username: u.username
+                }
+            })
+        })});
+};
+
+module.exports.getUser = function(req, res) {
         User.findById(req.params.user_id, function(err, user) {
             if (err) {
                 res.status(500).send(err);
