@@ -74,8 +74,9 @@ module.exports.unregister = function(req, res) {
 
 module.exports.searchUser = function(req, res) {
     var searchText = new Buffer(req.params.query, 'base64').toString();
-    var filteredRegexPattern = searchText.replace(/[^\w\s]/gi, " ").split(/\s+/g).join("|");
-    console.log("Search users by regex: " + filteredRegexPattern);
+    var alternatives = searchText.replace(/[^\w\s@.]+/g, "#").split(/\s+/).filter(function(a) {return a !== "";});
+    var filteredRegexPattern = alternatives.join("|").replace('.', '\\.');
+    console.log("Search users by regex: '" + filteredRegexPattern + "'");
     var regExp = new RegExp(filteredRegexPattern, 'i');
     User.find({$or: [{username: regExp}, {useremail: regExp}]})
         .limit(10)
@@ -84,15 +85,20 @@ module.exports.searchUser = function(req, res) {
             res.status(500).send(err);
             return;
         }
-        res.json({
-            users: users.map(function(u) {
-                return {
-                    _id: u._id,
-                    useremail: u.useremail,
-                    username: u.username
-                }
+        if (filteredRegexPattern === "") {
+            res.json({users: []});
+        } else {
+            res.json({
+                users: users.map(function(u) {
+                    return {
+                        _id: u._id,
+                        useremail: u.useremail,
+                        username: u.username
+                    }
+                })
             })
-        })});
+        }
+        });
 };
 
 module.exports.getUser = function(req, res) {
