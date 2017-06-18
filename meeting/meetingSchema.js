@@ -1,30 +1,32 @@
 // Load required packages
 var mongoose = require('mongoose');
 
-var Meeting = new mongoose.Schema({
+var meetingSchema = new mongoose.Schema({
     name: String,
     purpose: String,
     location: String,
     duration: Number,
-    range: [Date, Date],
+    range: [Date],
     arranged_timeslot: Date,
     facilitator: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    participants: [String, String],
+    participantEmails: [String],
     availabilities: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
         slots: [{
-            range: [Date, Date],
+            range: [Date],
             priority: Number
         }]
     }]
 });
 
 // Export the Mongoose model
-module.exports = mongoose.model('Meeting', Meeting);
+var Meeting = mongoose.model('Meeting', meetingSchema);
+
+module.exports = Meeting;
 

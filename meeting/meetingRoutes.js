@@ -22,5 +22,8 @@ function meetingRoutes(passport) {
         .put(meetingController.putMeeting)
         .delete(meetingController.deleteMeeting);
 
+    router.route('/findByFacilitator/:facilitator_id')
+        .get(meetingController.findMeetingsByFacilitatorId);
+
     return router;
 }
