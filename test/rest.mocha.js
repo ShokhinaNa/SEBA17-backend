@@ -13,18 +13,20 @@ describe('REST API test', function () {
             //to be received
             _id: undefined,
             //you should make sure this user does not exist yet and eventually choose a different username
-            username: "testhans",
+            username: "testuser",
             password: "jaskdjasdjkas",
+            useremail: "otheremail",
             //to be received
             token: undefined
         };
 
         //register testuser
         request(app)
-            .post("/signup")
+            .post("/api/user/signup")
             .send({
                 username: testuser.username,
-                password: testuser.password
+                password: testuser.password,
+                useremail: testuser.useremail
             })
             .expect('Content-Type', /json/)
             .expect(201)
@@ -44,14 +46,14 @@ describe('REST API test', function () {
     after(function (done) {
         //delete testuser
         request(app)
-            .post("/unregister")
+            .post("/api/user/unregister")
             .set("Authorization", "JWT " + testuser.token)
             .expect(200, done);
     });
 
     it("should login successfully", function (done) {
         request(app)
-            .post("/login")
+            .post("/api/user/login")
             .send({
                 username: testuser.username,
                 password: testuser.password
