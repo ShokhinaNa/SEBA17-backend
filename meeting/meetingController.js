@@ -56,16 +56,7 @@ exports.findMeetingsByFacilitatorId = function (req, res) {
                 res.status(400).send(err);
                 return;
             }
-
-            var meetingsInfo = meetings.map(function (m) {
-                return {
-                    name: m.name,
-                    purpose: m.purpose,
-                    participantEmails: m.participantEmails
-                }
-            });
-            // console.log("GET meetings: " + JSON.stringify(meetingsInfo));
-            res.json(meetingsInfo);
+            res.json(meetings);
         });
     });
 
