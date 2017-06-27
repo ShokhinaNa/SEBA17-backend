@@ -27,12 +27,14 @@ exports.postMeeting = function (req, res) {
             res.status(400).send(err);
             return;
         }
+        var link = 'http://localhost:8000/#!/scheduling/' + meeting._id;
 
         var mailOptions = {
             from: 'TimeetService@yandex.com',
             to: meeting.participantEmails.toString(),
             subject: meeting.name,
-            text: meeting.purpose
+            html: '<p>' + meeting.purpose + '</p>'
+            + '<p>Click <a href="'+ link + '">here</a> to set your availabilities</p>'
         };
 
         transporter.sendMail(mailOptions, function(error, info){
