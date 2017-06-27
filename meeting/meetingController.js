@@ -1,5 +1,18 @@
 var User = require('../user/userSchema');
 var Meeting = require('./meetingSchema');
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+    host: 'smtp.yandex.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: 'TimeetService@yandex.com',
+        pass: 'meetadmin'
+    }
+});
+
+
 
 // Create new meeting
 exports.postMeeting = function (req, res) {
@@ -14,6 +27,23 @@ exports.postMeeting = function (req, res) {
             res.status(400).send(err);
             return;
         }
+
+        var mailOptions = {
+            from: 'TimeetService@yandex.com',
+            to: meeting.participantEmails.toString(),
+            subject: meeting.name,
+            text: meeting.purpose
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+
+
         res.status(201).json(m);
     });
 };
