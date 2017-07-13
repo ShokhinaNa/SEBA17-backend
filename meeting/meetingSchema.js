@@ -22,6 +22,9 @@ var meetingSchema = new mongoose.Schema({
             range: [Date],
             priority: Number
         }]
+    }],
+    bestSlots:[{
+        range: [Date]
     }]
 });
 
@@ -29,4 +32,3 @@ var meetingSchema = new mongoose.Schema({
 var Meeting = mongoose.model('Meeting', meetingSchema);
 
 module.exports = Meeting;
-
