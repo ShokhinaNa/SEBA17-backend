@@ -17,6 +17,9 @@ function meetingRoutes(passport) {
         .post(meetingController.postMeeting)
         .get(meetingController.getMeetings);
 
+    router.route('/:meeting_id/timeslots')
+        .put(meetingController.setMeetingAvailabilities);
+
     router.route('/:meeting_id')
         .get(meetingController.getMeeting)
         .put(meetingController.putMeeting)

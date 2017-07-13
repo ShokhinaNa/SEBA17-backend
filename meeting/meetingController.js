@@ -113,6 +113,7 @@ exports.putMeeting = function (req, res) {
             res.json(meeting);
         });
 };
+
 // Create endpoint /api/meeting/:meeting_id for DELETE
 exports.deleteMeeting = function (req, res) {
     // Use the Meeting model to find a specific meeting and remove it
@@ -124,4 +125,27 @@ exports.deleteMeeting = function (req, res) {
         m.remove();
         res.sendStatus(200);
     });
+};
+
+// Create endpoint /api/meeting/:meeting_id/timeslots for PUT
+exports.setMeetingAvailabilities = function (req, res) {
+
+    var meeting = new Meeting(req.body);
+    console.log("Updating availabilities for meeting: " + JSON.stringify(meeting));
+
+    // Use the Meeting model to find a specific meeting and update it
+    Meeting.findByIdAndUpdate(
+        meeting._id,
+        meeting,
+        {
+            new: true,
+            //run validations
+            runValidators: true
+        }, function (err, meeting) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.json(meeting);
+        });
 };
