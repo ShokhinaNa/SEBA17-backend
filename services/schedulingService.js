@@ -16,7 +16,7 @@ module.exports.findBestSlots = function (meeting) {
 
         meeting.bestSlots = [];
         var extendedSlots = [];
-        var extendedSlot = slots[0];
+        var extendedSlot = {range:[new Date(), new Date()]};
         slots.forEach(function (slot) {
             if (slotOverlaping(extendedSlot, slot)) {
                 //extending existing extendedSlot
