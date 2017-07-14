@@ -3,8 +3,10 @@ module.exports.findBestSlots = function (meeting) {
     var slots = [];
 
     availabilities.forEach(function (availability) {
-        if (slots === []) slots = availability.slots;
-        else slots.push.apply(slots, availability.slots);
+        slots.push.apply(slots, availability.slots);
+        slots.forEach(function (slot) {
+            console.log("Slots: " + slot.range);
+        });
     });
 
     if (slots.length > 0) {
