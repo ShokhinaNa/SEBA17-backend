@@ -103,7 +103,6 @@ exports.deleteMeeting = function (req, res) {
 exports.setMeetingAvailabilities = function (req, res) {
 
     var meeting = new Meeting(req.body);
-    console.log("Updating availabilities for meeting: " + JSON.stringify(meeting));
 
     // Use the Meeting model to find a specific meeting and update it
     Meeting.findByIdAndUpdate(
