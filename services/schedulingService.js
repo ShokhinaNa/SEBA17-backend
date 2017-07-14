@@ -34,18 +34,14 @@ module.exports.findBestSlots = function (meeting) {
         });
 
         //reverse extendedSlot -> bestSlot
-        //DO NOT FORGET TO DELETE
-        meeting.dayRange[0] = meeting.range[0];
-        meeting.dayRange[1] = meeting.range[1];
-
         var bestSlot = extendedSlots[0];
-        bestSlot.range[0] = meeting.dayRange[0];
+        bestSlot.range[0] = meeting.range[0];
         extendedSlots.forEach(function (slot) {
             bestSlot.range[1] = slot.range[0];
             meeting.bestSlots.push(bestSlot);
             bestSlot.range[0] = slot.range[1];
         });
-        bestSlot.range[1] = meeting.dayRange[1];
+        bestSlot.range[1] = meeting.range[1];
         meeting.bestSlots.push(bestSlot);
 
         meeting.bestSlots.forEach(function (slot) {
