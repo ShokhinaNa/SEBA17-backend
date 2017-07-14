@@ -7,6 +7,7 @@ var meetingSchema = new mongoose.Schema({
     location: String,
     duration: Number,
     range: [Date],
+    dayRange: [Date],
     arranged_timeslot: Date,
     facilitator: {
         type: mongoose.Schema.Types.ObjectId,
@@ -22,6 +23,9 @@ var meetingSchema = new mongoose.Schema({
             range: [Date],
             priority: Number
         }]
+    }],
+    bestSlots:[{
+        range: [Date]
     }]
 });
 
@@ -29,4 +33,3 @@ var meetingSchema = new mongoose.Schema({
 var Meeting = mongoose.model('Meeting', meetingSchema);
 
 module.exports = Meeting;
-

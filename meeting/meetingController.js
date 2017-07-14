@@ -1,6 +1,7 @@
 var User = require('../user/userSchema');
 var Meeting = require('./meetingSchema');
 var emailService = require('../services/emailService.js');
+var schedulingService = require('../services/schedulingService.js');
 
 
 // Create new meeting
@@ -40,6 +41,7 @@ exports.getMeeting = function (req, res) {
             res.status(400).send(err);
             return;
         }
+        schedulingService.findBestSlots(meeting);
         res.json(meeting);
     });
 };
