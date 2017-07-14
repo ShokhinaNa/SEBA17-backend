@@ -41,8 +41,7 @@ exports.getMeeting = function (req, res) {
             res.status(400).send(err);
             return;
         }
-        if (meeting.availabilities[0].slots != undefined && meeting.availabilities[0].slots != null)
-            schedulingService.findBestSlots(meeting);
+        schedulingService.findBestSlots(meeting);
         res.json(meeting);
     });
 };

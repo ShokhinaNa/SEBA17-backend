@@ -1,50 +1,58 @@
 module.exports.findBestSlots = function (meeting) {
     var availabilities = meeting.availabilities;
-    var slots;
+    var slots = [];
 
     availabilities.forEach(function (availability) {
-        if (slots === undefined || slots === null) slots = availability.slots
-        else slots.concat(availability.slots);
-        console.log("availability slots: " + availability.slots);
-    });
-    console.log("SIZE " + slots.length);
-
-    // slots.forEach(function (slot) {
-    //     console.log("slot: " + slot.range[0].toLocaleString()+ " " + slot.range[1].toLocaleString());
-    // });
-    slots.sort(function (a, b) {
-        return new Date(a.range[0]) - new Date(b.range[0]);
+        if (slots === []) slots = availability.slots;
+        else slots.push.apply(slots, availability.slots);
     });
 
-    console.log("SORTED");
-    // slots.forEach(function (slot) {
-    //     console.log("slot1: " + slot.range[0].toLocaleString()+ " " + slot.range[1].toLocaleString());
-    // });
-    meeting.bestSlots = []
-    var bestslot = slots[0];
-    slots.forEach(function (slot) {
-        //console.log("sort slot: "+ slot.range[0].toLocaleString()+ " " + slot.range[1].toLocaleString());
-        if(slotOverlaping(bestslot, slot)){
-            //extending existing bestslot
-            if(slot.range[1] > bestslot.range[1])
-                bestslot.range[1] = slot.range[1];
-        } else {
-            //bestslot ends, replaced by slot
-            meeting.bestSlots.push(bestslot);
-            bestslot = slot;
-        }
-    });
-    meeting.bestSlots.push(bestslot);
-    meeting.bestSlots.forEach(function (slot) {
-        console.log("bestslot: " + slot);
-    });
+    if (slots.length > 0) {
+        slots.sort(function (a, b) {
+            return new Date(a.range[0]) - new Date(b.range[0]);
+        });
 
+        console.log("SORTED");
 
-    meeting.bestSlots.forEach(function (slot) {
-        console.log("bestslot: " + slot.range[0].toLocaleString()+ " " + slot.range[1].toLocaleString());
-    });
+        meeting.bestSlots = [];
+        var extendedSlots = [];
+        var extendedSlot = slots[0];
+        slots.forEach(function (slot) {
+            if (slotOverlaping(extendedSlot, slot)) {
+                //extending existing extendedSlot
+                if (slot.range[1] > extendedSlot.range[1])
+                    extendedSlot.range[1] = slot.range[1];
+            } else {
+                //extendedSlot ends, replaced by slot
+                extendedSlots.push(extendedSlot);
+                extendedSlot = slot;
+            }
+        });
+        extendedSlots.push(extendedSlot);
+        extendedSlots.forEach(function (slot) {
+            console.log("extendedSlots: " + slot.range[0].toLocaleString() + " " + slot.range[1].toLocaleString());
+        });
 
+        //reverse extendedSlot -> bestSlot
+        //DO NOT FORGET TO DELETE
+        meeting.dayRange[0] = meeting.range[0];
+        meeting.dayRange[1] = meeting.range[1];
 
+        var bestSlot = extendedSlots[0];
+        bestSlot.range[0] = meeting.dayRange[0];
+        extendedSlots.forEach(function (slot) {
+            bestSlot.range[1] = slot.range[0];
+            meeting.bestSlots.push(bestSlot);
+            bestSlot.range[0] = slot.range[1];
+        });
+        bestSlot.range[1] = meeting.dayRange[1];
+        meeting.bestSlots.push(bestSlot);
+
+        meeting.bestSlots.forEach(function (slot) {
+            console.log("bestSlots: " + slot.range[0].toLocaleString() + " " + slot.range[1].toLocaleString());
+        });
+
+    }
 }
 
 function slotOverlaping(a,b){
