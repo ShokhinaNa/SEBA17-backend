@@ -45,7 +45,7 @@ module.exports.findBestSlots = function (meeting) {
             meeting.bestSlots.push(bestSlot);
             bestSlot.range[0] = slot.range[1];
         });
-        bestSlot.range[1] = meeting.range[1];
+        bestSlot.range[1] = new Date(meeting.range[1].getTime() + 1000 * 60 * 60 * 24);
         meeting.bestSlots.push(bestSlot);
 
         meeting.bestSlots.forEach(function (slot) {
