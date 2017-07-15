@@ -7,7 +7,7 @@ var meetingSchema = new mongoose.Schema({
     location: String,
     duration: Number,
     range: [Date],
-    dayRange: [Date],
+    dayRange: [Number],
     arranged_timeslot: Date,
     facilitator: {
         type: mongoose.Schema.Types.ObjectId,
