@@ -102,12 +102,16 @@ exports.deleteMeeting = function (req, res) {
 // Create endpoint /api/meeting/:meeting_id/timeslots for PUT
 exports.setMeetingAvailabilities = function (req, res) {
 
-    var meeting = new Meeting(req.body);
+    console.log("Updating availabilities for meeting: " + res.body);
 
     // Use the Meeting model to find a specific meeting and update it
     Meeting.findByIdAndUpdate(
-        meeting._id,
-        meeting,
+        req.body._id,
+        {
+            $set: {
+                availabilities: req.body.availabilities
+            }
+        },
         {
             new: true,
             //run validations
