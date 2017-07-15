@@ -6,10 +6,6 @@ module.exports.findBestSlots = function (meeting) {
         slots.push.apply(slots, availability.slots);
     });
 
-    slots.forEach(function (slot) {
-        console.log("Slots: " + slot.range);
-    });
-
     console.log("SIZE " + slots.length);
 
     if (slots.length > 0) {
@@ -17,26 +13,31 @@ module.exports.findBestSlots = function (meeting) {
             return new Date(a.range[0]) - new Date(b.range[0]);
         });
 
-
         meeting.bestSlots = [];
         var extendedSlots = [];
         var extendedSlot = null;
         slots.forEach(function (slot) {
             if (!extendedSlot) {
-                extendedSlot = shallowCopy(slot);
+                extendedSlot = copySlot(slot);
             } else if (slotOverlapping(extendedSlot, slot)) {
                 //extending existing extendedSlot
-                extendedSlot.range[1] = slot.range[1];
+                if (extendedSlot.range[1] < slot.range[1]) {
+                    extendedSlot.range[1] = slot.range[1];
+                }
             } else {
                 //extendedSlot ends, replaced by slot
                 extendedSlots.push(extendedSlot);
-                extendedSlot = shallowCopy(slot);
+                extendedSlot = copySlot(slot);
             }
         });
         extendedSlots.push(extendedSlot);
 
+        extendedSlots.forEach(function (slot) {
+            console.log("extendedSlots: " + slot.range);
+        });
+
         //reverse extendedSlot -> bestSlot
-        var bestSlot = shallowCopy(extendedSlots[0]);
+        var bestSlot = copySlot(extendedSlots[0]);
 
         bestSlot.range[0] = meeting.range[0];
         extendedSlots.forEach(function (slot) {
@@ -48,16 +49,27 @@ module.exports.findBestSlots = function (meeting) {
         meeting.bestSlots.push(bestSlot);
 
         meeting.bestSlots.forEach(function (slot) {
-            console.log("bestSlots: " + slot.range[0].toLocaleString() + " " + slot.range[1].toLocaleString());
+            console.log("bestSlots: " + slot.range);
         });
 
     }
 };
 
 function slotOverlapping(a, b) {
-    return b.range[0] >= a.range[0] && b.range[0] <= a.range[1];
+    return +a.range[0] <= +b.range[0] && +b.range[0] <= +a.range[1];
 }
 
-function shallowCopy(o) {
-    return JSON.parse(JSON.stringify(o));
+function copySlot(slot) {
+    return {
+        range: [new Date(slot.range[0]), new Date(slot.range[1])]
+    };
+}
+
+function getClass(obj) {
+    if (typeof obj === "undefined")
+        return "undefined";
+    if (obj === null)
+        return "null";
+    return Object.prototype.toString.call(obj)
+        .match(/^\[object\s(.*)\]$/)[1];
 }
