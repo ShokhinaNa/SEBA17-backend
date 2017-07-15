@@ -11,7 +11,7 @@ function meetingRoutes(passport) {
     mw.unless = unless;
 
     //middleware
-    router.use(mw.unless({method: ['GET', 'OPTIONS']}));
+    router.use(mw.unless({method: ['GET', 'OPTIONS', 'PUT']}));
 
     router.route('/')
         .post(meetingController.postMeeting)

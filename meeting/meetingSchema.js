@@ -15,10 +15,8 @@ var meetingSchema = new mongoose.Schema({
     },
     participantEmails: [String],
     availabilities: [{
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
+        // TODO: make this a proper reference again when we create real backend users for anonymous users
+        user: String,
         slots: [{
             range: [Date],
             priority: Number
