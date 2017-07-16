@@ -17,7 +17,7 @@ exports.postMeeting = function (req, res) {
             res.status(400).send(err);
             return;
         }
-        emailService.sendEmails(meeting);
+        emailService.sendInvitations(meeting);
         res.status(201).json(m);
     });
 };
@@ -142,6 +142,7 @@ exports.setArrangedTimeslot = function (req, res) {
                 res.status(400).send(err);
                 return;
             }
+            emailService.sendArrangedMeetings(meeting);
             res.json(meeting);
         });
 };

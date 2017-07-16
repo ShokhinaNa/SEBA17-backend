@@ -10,7 +10,7 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-module.exports.sendEmails = function(meeting) {
+module.exports.sendInvitations = function(meeting) {
     meeting.participantEmails.forEach(function(participantEmail) {
         // For non-logged in users generate a unique id and add it to the link
         var uuid = uuidv4();
@@ -20,7 +20,8 @@ module.exports.sendEmails = function(meeting) {
             from: 'TimeetService@yandex.com',
             to: participantEmail,
             subject: meeting.name,
-            html: '<p>' + meeting.purpose + '</p>'
+            html: '<h1>' + meeting.name + '</h1>'
+            + '<p>' + meeting.purpose + '</p>'
             + '<p>Click <a href="' + link + '">here</a> to set your availabilities</p>'
         };
 
@@ -28,7 +29,31 @@ module.exports.sendEmails = function(meeting) {
             if (error) {
                 console.log(error);
             } else {
-                console.log('Email sent: ' + info.response);
+                console.log('Invitation email sent: ' + info.response);
+            }
+        });
+    });
+};
+
+module.exports.sendArrangedMeetings = function(meeting) {
+    meeting.participantEmails.forEach(function(participantEmail) {
+        var mailOptions = {
+            from: 'TimeetService@yandex.com',
+            to: participantEmail,
+            subject: meeting.name,
+            html: '<h1>' + meeting.name + '</h1>'
+            + '<p>' + meeting.purpose + '</p>'
+            + '<p> Meeting arranged, check information below.</p>'
+            + '<p> Time: ' + meeting.arranged_timeslot.toLocaleString() + '</p>'
+            + '<p> Location: ' + meeting.location + '</p>'
+            + '<p> Duration: ' + meeting.duration + 'min</p>'
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Notification email sent: ' + info.response);
             }
         });
     });
