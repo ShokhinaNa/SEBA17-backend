@@ -19,7 +19,8 @@ var meetingSchema = new mongoose.Schema({
         user: String,
         slots: [{
             range: [Date],
-            priority: Number
+            priority: Number,
+            imported: Boolean
         }]
     }],
     bestSlots:[{
