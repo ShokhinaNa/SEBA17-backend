@@ -101,9 +101,6 @@ exports.deleteMeeting = function (req, res) {
 
 // Create endpoint /api/meeting/:meeting_id/timeslots for PUT
 exports.setMeetingAvailabilities = function (req, res) {
-
-    console.log("Updating availabilities for meeting: " + res.body);
-
     // Use the Meeting model to find a specific meeting and update it
     Meeting.findByIdAndUpdate(
         req.body._id,
@@ -112,6 +109,30 @@ exports.setMeetingAvailabilities = function (req, res) {
                 availabilities: req.body.availabilities
             }
         },
+        {
+            new: true,
+            //run validations
+            runValidators: true
+        }, function (err, meeting) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.json(meeting);
+        });
+};
+
+// Create endpoint /api/meeting/:meeting_id/arrangedtimeslot for PUT
+exports.setArrangedTimeslot = function (req, res) {
+
+    // Use the Meeting model to find a specific meeting and update it
+    Meeting.findByIdAndUpdate(
+         req.body._id,
+         {
+             $set: {
+                 arranged_timeslot: req.body.arranged_timeslot
+             }
+         },
         {
             new: true,
             //run validations
