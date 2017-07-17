@@ -2,7 +2,7 @@ var User = require('../user/userSchema');
 var Meeting = require('./meetingSchema');
 var emailService = require('../services/emailService.js');
 var schedulingService = require('../services/schedulingService.js');
-
+var calendarImportService = require('../services/calendarImportService.js')
 
 // Create new meeting
 exports.postMeeting = function (req, res) {
@@ -145,4 +145,20 @@ exports.setArrangedTimeslot = function (req, res) {
             emailService.sendArrangedMeetings(meeting);
             res.json(meeting);
         });
+};
+
+// Create endpoint /api/meeting/:meeting_id/importCalendar/:user_id for PUT
+exports.importCalendar = function (req, res) {
+    console.log("Importing calendar for meeting: " + req.params.meeting_id + " from " + req.body);
+
+    calendarImportService(req.body.calendarUrl, function(err, slots) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+
+        console.log("Imported slots:", slots);
+
+        res.json(slots);
+    });
 };
