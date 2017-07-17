@@ -5,7 +5,7 @@ var meetingSchema = new mongoose.Schema({
     name: String,
     purpose: String,
     location: String,
-    duration: Number,
+    duration: Number, // in minutes
     range: [Date],
     dayRange: [Number],
     arranged_timeslot: Date,

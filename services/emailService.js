@@ -1,4 +1,7 @@
 var nodemailer = require('nodemailer');
+var ICS = require('ics');
+
+var ics = new ICS();
 
 var transporter = nodemailer.createTransport({
     host: 'smtp.yandex.com',
@@ -36,6 +39,13 @@ module.exports.sendInvitations = function(meeting) {
 };
 
 module.exports.sendArrangedMeetings = function(meeting) {
+    var icsEventText = ics.buildEvent({
+        start: meeting.arranged_timeslot.toISOString(),
+        end: new Date(meeting.arranged_timeslot.getTime() + meeting.duration * 60000).toISOString(),
+        title: meeting.name,
+        description: meeting.purpose,
+        location: meeting.location
+    });
     meeting.participantEmails.forEach(function(participantEmail) {
         var mailOptions = {
             from: 'TimeetService@yandex.com',
@@ -46,7 +56,14 @@ module.exports.sendArrangedMeetings = function(meeting) {
             + '<p> Meeting arranged, check information below.</p>'
             + '<p> Time: ' + meeting.arranged_timeslot.toLocaleString() + '</p>'
             + '<p> Location: ' + meeting.location + '</p>'
-            + '<p> Duration: ' + meeting.duration + 'min</p>'
+            + '<p> Duration: ' + meeting.duration + 'min</p>',
+            attachments: [
+                {
+                    filename: 'timeet.ics',
+                    content: icsEventText,
+                    contentType: 'text/calendar'
+                }
+            ]
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
