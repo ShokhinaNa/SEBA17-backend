@@ -28,10 +28,14 @@
     "express": "^4.13.4",
     "express-unless": "^0.3.0",
     "generate-schema": "^2.5.0",
+    "icalendar": "^0.7.1",
+    "ics": "^1.5.0",
     "jwt-simple": "^0.5.0",
     "mongoose": "^4.4.6",
+    "nodemailer": "^4.0.1",
     "passport": "^0.3.2",
     "passport-jwt": "^2.0.0",
+    "request": "^2.81.0",
     "supertest": "^1.2.0"
   }
 }

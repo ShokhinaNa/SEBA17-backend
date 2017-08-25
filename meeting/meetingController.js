@@ -1,5 +1,8 @@
 var User = require('../user/userSchema');
 var Meeting = require('./meetingSchema');
+var emailService = require('../services/emailService.js');
+var schedulingService = require('../services/schedulingService.js');
+var calendarImportService = require('../services/calendarImportService.js')
 
 // Create new meeting
 exports.postMeeting = function (req, res) {
@@ -14,6 +17,7 @@ exports.postMeeting = function (req, res) {
             res.status(400).send(err);
             return;
         }
+        emailService.sendInvitations(meeting);
         res.status(201).json(m);
     });
 };
@@ -37,7 +41,7 @@ exports.getMeeting = function (req, res) {
             res.status(400).send(err);
             return;
         }
-
+        schedulingService.findBestSlots(meeting);
         res.json(meeting);
     });
 };
@@ -56,16 +60,7 @@ exports.findMeetingsByFacilitatorId = function (req, res) {
                 res.status(400).send(err);
                 return;
             }
-
-            var meetingsInfo = meetings.map(function (m) {
-                return {
-                    name: m.name,
-                    purpose: m.purpose,
-                    participantEmails: m.participantEmails
-                }
-            });
-            // console.log("GET meetings: " + JSON.stringify(meetingsInfo));
-            res.json(meetingsInfo);
+            res.json(meetings);
         });
     });
 
@@ -90,6 +85,7 @@ exports.putMeeting = function (req, res) {
             res.json(meeting);
         });
 };
+
 // Create endpoint /api/meeting/:meeting_id for DELETE
 exports.deleteMeeting = function (req, res) {
     // Use the Meeting model to find a specific meeting and remove it
@@ -100,5 +96,69 @@ exports.deleteMeeting = function (req, res) {
         }
         m.remove();
         res.sendStatus(200);
+    });
+};
+
+// Create endpoint /api/meeting/:meeting_id/timeslots for PUT
+exports.setMeetingAvailabilities = function (req, res) {
+    // Use the Meeting model to find a specific meeting and update it
+    Meeting.findByIdAndUpdate(
+        req.body._id,
+        {
+            $set: {
+                availabilities: req.body.availabilities
+            }
+        },
+        {
+            new: true,
+            //run validations
+            runValidators: true
+        }, function (err, meeting) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.json(meeting);
+        });
+};
+
+// Create endpoint /api/meeting/:meeting_id/arrangedtimeslot for PUT
+exports.setArrangedTimeslot = function (req, res) {
+
+    // Use the Meeting model to find a specific meeting and update it
+    Meeting.findByIdAndUpdate(
+         req.body._id,
+         {
+             $set: {
+                 arranged_timeslot: req.body.arranged_timeslot
+             }
+         },
+        {
+            new: true,
+            //run validations
+            runValidators: true
+        }, function (err, meeting) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            emailService.sendArrangedMeetings(meeting);
+            res.json(meeting);
+        });
+};
+
+// Create endpoint /api/meeting/:meeting_id/importCalendar/:user_id for PUT
+exports.importCalendar = function (req, res) {
+    console.log("Importing calendar for meeting: " + req.params.meeting_id + " from " + req.body);
+
+    calendarImportService(req.body.calendarUrl, function(err, slots) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+
+        console.log("Imported slots:", slots);
+
+        res.json(slots);
     });
 };

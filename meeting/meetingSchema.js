@@ -5,8 +5,9 @@ var meetingSchema = new mongoose.Schema({
     name: String,
     purpose: String,
     location: String,
-    duration: Number,
+    duration: Number, // in minutes
     range: [Date],
+    dayRange: [Number],
     arranged_timeslot: Date,
     facilitator: {
         type: mongoose.Schema.Types.ObjectId,
@@ -14,14 +15,16 @@ var meetingSchema = new mongoose.Schema({
     },
     participantEmails: [String],
     availabilities: [{
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
+        // TODO: make this a proper reference again when we create real backend users for anonymous users
+        user: String,
         slots: [{
             range: [Date],
-            priority: Number
+            priority: Number,
+            imported: Boolean
         }]
+    }],
+    bestSlots:[{
+        range: [Date]
     }]
 });
 
@@ -29,4 +32,3 @@ var meetingSchema = new mongoose.Schema({
 var Meeting = mongoose.model('Meeting', meetingSchema);
 
 module.exports = Meeting;
-

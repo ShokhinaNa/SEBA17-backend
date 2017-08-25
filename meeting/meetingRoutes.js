@@ -11,11 +11,20 @@ function meetingRoutes(passport) {
     mw.unless = unless;
 
     //middleware
-    router.use(mw.unless({method: ['GET', 'OPTIONS']}));
+    router.use(mw.unless({method: ['GET', 'OPTIONS', 'PUT']}));
 
     router.route('/')
         .post(meetingController.postMeeting)
         .get(meetingController.getMeetings);
+
+    router.route('/:meeting_id/timeslots')
+        .put(meetingController.setMeetingAvailabilities);
+
+    router.route('/:meeting_id/arrangedtimeslot')
+        .put(meetingController.setArrangedTimeslot);
+
+    router.route('/:meeting_id/importCalendar/:user_id')
+        .put(meetingController.importCalendar);
 
     router.route('/:meeting_id')
         .get(meetingController.getMeeting)
